@@ -2,9 +2,9 @@
 import 'package:flutter/material.dart';
 
 class AppTheme{
-  static final  _borderDesign = OutlineInputBorder(
+  static  _borderDesign([Color? color]) => OutlineInputBorder(
     borderSide: BorderSide(
-      color: Colors.white.withOpacity(0.2)
+      color: color ?? Colors.white.withOpacity(0.2)
     ),
     borderRadius: BorderRadius.circular(20),
   );
@@ -12,8 +12,8 @@ class AppTheme{
   static final lightThemeMode = ThemeData.light().copyWith(
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(20),
-      enabledBorder: _borderDesign,
-      focusedBorder: _borderDesign
+      enabledBorder: _borderDesign(),
+      focusedBorder: _borderDesign(),
     )
   );
 }
