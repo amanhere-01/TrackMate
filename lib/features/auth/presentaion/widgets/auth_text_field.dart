@@ -21,7 +21,7 @@ class AuthTextField extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8,),
-        TextFormField(
+        TextField(
           controller: controller,
           cursorColor: ColorPalette.white3,
           obscureText: isObscure,
@@ -33,12 +33,6 @@ class AuthTextField extends StatelessWidget {
             prefixIcon: Icon(icon),
             prefixIconColor: Colors.white
           ),
-          validator: (value){
-            if(value!.isEmpty){
-              return '$hint is empty!';
-            }
-            return null;
-          },     
         )
       ],
     );
