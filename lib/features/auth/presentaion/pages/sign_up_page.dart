@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:track_mate/core/utils/show_snackbar.dart';
 import 'package:track_mate/features/auth/bloc/auth_bloc.dart';
 import 'package:track_mate/features/auth/presentaion/pages/sign_in_page.dart';
-import 'package:track_mate/home_page.dart';
+import 'package:track_mate/features/location/presentation/pages/home_page.dart';
 import '../../../../core/theme/color_palette.dart';
 import '../../../../core/widgets/loader.dart';
 import '../widgets/auth_text_field.dart';

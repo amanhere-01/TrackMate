@@ -6,7 +6,7 @@ import 'package:track_mate/features/auth/presentaion/pages/sign_up_page.dart';
 
 import '../../../../core/utils/show_snackbar.dart';
 import '../../../../core/widgets/loader.dart';
-import '../../../../home_page.dart';
+import '../../../location/presentation/pages/home_page.dart';
 import '../widgets/auth_text_field.dart';
 import '../widgets/glass_box.dart';
 
