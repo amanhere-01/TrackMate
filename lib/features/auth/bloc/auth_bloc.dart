@@ -13,6 +13,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<AuthEvent>((event, emit) => emit(AuthLoading()));
     on<AuthSignUp>(_onAuthSignUp);
     on<AuthSignIn>(_onAuthSignIn);
+    on<AuthSignOut>(_onAuthSignOut);
   }
 
   Future<void> _onAuthSignUp(AuthSignUp event, Emitter<AuthState> emit) async {
@@ -27,6 +28,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onAuthSignIn(AuthSignIn event, Emitter<AuthState> emit) async{
     try{
       await _authRemoteDataSource.signIn(email: event.email, password: event.password);
+      emit(AuthSuccess());
+    } catch(e){
+      emit(AuthFailure(e.toString()));
+    }
+  }
+
+  Future<void> _onAuthSignOut(AuthSignOut event, Emitter<AuthState> emit) async {
+    try{
+      await _authRemoteDataSource.signOut();
       emit(AuthSuccess());
     } catch(e){
       emit(AuthFailure(e.toString()));
