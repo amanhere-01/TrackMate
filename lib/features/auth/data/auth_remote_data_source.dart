@@ -1,60 +1,68 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
+import 'package:track_mate/core/models/user.dart';
 
 abstract interface class AuthRemoteDataSource{
 
-  User? get currentUser;
+  fb.User? get currentUser;
 
-  Future signUp({
+  Future<User> signUp({
     required String name,
     required String email,
     required String password
   });
 
-  Future signIn({
+  Future<User> signIn({
     required String email,
     required String password
   });
-
+  
   Future<void> signOut();
 }
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource{
-  final _firebase = FirebaseAuth.instance;
+  final _firebase = fb.FirebaseAuth.instance;
 
   @override
-  User? get currentUser => _firebase.currentUser;
+  fb.User? get currentUser => _firebase.currentUser;
 
   @override
-  Future signUp({required String name, required String email, required String password}) async{
+  Future<User> signUp({required String name, required String email, required String password}) async{
     try{
-      await _firebase.createUserWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch(e){
-      if(e.code == 'email-already-in-use'){
+      final res = await _firebase.createUserWithEmailAndPassword(email: email, password: password);
+      await res.user?.updateDisplayName(name);
+      if(res.user != null){
+        throw Exception('Sign-up failed: User is null. ');
+      }
+      return User(uid: res.user!.uid, name: res.user!.displayName ?? name, email: res.user!.email!);
+    } on fb.FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        throw Exception('The email address is already in use by another account.');
+      } else {
         throw Exception(e.toString());
       }
-    } catch(e){
+    } catch (e) {
       throw Exception(e.toString());
     }
   }
 
   @override
-  Future signIn({required String email, required String password}) async{
+  Future<User> signIn({required String email, required String password}) async{
     try{
-      final user = await _firebase.signInWithEmailAndPassword(email: email, password: password);
-    } on FirebaseAuthException catch(e){
+      final res = await _firebase.signInWithEmailAndPassword(email: email, password: password);
+      return User(uid: res.user!.uid, name: res.user!.displayName!, email: res.user!.email!);
+    } on fb.FirebaseAuthException catch(e){
       throw Exception(e.toString());
     } catch(e){
       throw Exception(e.toString());
     }
   }
-
 
   @override
   Future<void> signOut() async{
     try{
       await _firebase.signOut();
-    } on FirebaseAuthException catch(e){
+    } on fb.FirebaseAuthException catch(e){
       throw Exception(e.toString());
     } catch(e){
       throw Exception(e.toString());

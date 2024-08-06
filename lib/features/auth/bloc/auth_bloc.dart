@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-
+import '../../../core/models/user.dart';
 import '../data/auth_remote_data_source.dart';
 
 part 'auth_event.dart';
@@ -18,8 +18,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onAuthSignUp(AuthSignUp event, Emitter<AuthState> emit) async {
     try{
-      await _authRemoteDataSource.signUp(name: event.name, email: event.email, password: event.password);
-      emit(AuthSuccess());
+      final  user = await _authRemoteDataSource.signUp(name: event.name, email: event.email, password: event.password);
+      emit(AuthSuccess(user));
     } catch(e){
       emit(AuthFailure(e.toString()));
     }
@@ -27,8 +27,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onAuthSignIn(AuthSignIn event, Emitter<AuthState> emit) async{
     try{
-      await _authRemoteDataSource.signIn(email: event.email, password: event.password);
-      emit(AuthSuccess());
+      final  user = await _authRemoteDataSource.signIn(email: event.email, password: event.password);
+      emit(AuthSuccess(user));
     } catch(e){
       emit(AuthFailure(e.toString()));
     }
@@ -37,7 +37,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   Future<void> _onAuthSignOut(AuthSignOut event, Emitter<AuthState> emit) async {
     try{
       await _authRemoteDataSource.signOut();
-      emit(AuthSuccess());
+      emit(AuthInitial());
     } catch(e){
       emit(AuthFailure(e.toString()));
     }
