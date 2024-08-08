@@ -11,4 +11,11 @@ class ColorPalette{
   static Color get white6 => const Color.fromRGBO(148, 148, 156, 1);
   static Color get white7 => const Color(0xFF757575);
   static Color get white8 => const Color.fromRGBO(45 , 44, 49, 1);
+
+
+  static Color get green1 => const Color.fromRGBO(208, 247, 226, 1);
+  static Color get green2 => const Color.fromRGBO(41, 135, 85, 1);
+
+  static Color get cyan1 => const Color.fromRGBO(229, 255, 255, 1);
+  static Color get cyan2 => const Color(0xff00FAD9);
 }

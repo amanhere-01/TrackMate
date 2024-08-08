@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme{
   static  _borderDesign([Color? color]) => OutlineInputBorder(
@@ -10,6 +11,7 @@ class AppTheme{
   );
 
   static final lightThemeMode = ThemeData.light().copyWith(
+    textTheme: GoogleFonts.hindTextTheme(),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(20),
       enabledBorder: _borderDesign(),
