@@ -1,18 +1,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
-class User{
+class UserModel{
   final String uid;
   final String name;
   final String email;
 
-  User({required this.uid, required this.name, required this.email});
+  UserModel({required this.uid, required this.name, required this.email});
 
-  factory User.fromDatabase(UserCredential user){
-    return User(
-      uid: user.user!.uid,
-      name: '',
-      email: '',
-    )
+  factory UserModel.fromDatabase(User user){
+    return UserModel(
+      uid: user.uid,
+      name: user.displayName ?? '' ,
+      email: user.email!,
+    );
   }
 
 }
