@@ -33,7 +33,7 @@ class _HomePageState extends State<HomePage> {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.share_location),
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const LocationSharePage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => LocationSharePage(user: widget.user,)));
                   },
                   label: Text(
                       'Share Location',

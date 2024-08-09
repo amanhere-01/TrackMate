@@ -8,10 +8,12 @@ import 'package:track_mate/core/utils/show_snackbar.dart';
 import 'package:track_mate/features/location/bloc/location_bloc.dart';
 import 'package:track_mate/features/location/presentation/widgets/share_location_page_map.dart';
 
+import '../../../../core/models/user_model.dart';
 import '../../../../core/widgets/loader.dart';
 
 class LocationSharePage extends StatefulWidget {
-  const LocationSharePage({super.key});
+  final UserModel user;
+  const LocationSharePage({super.key, required this.user});
 
   @override
   State<LocationSharePage> createState() => _LocationSharePageState();
@@ -42,6 +44,14 @@ class _LocationSharePageState extends State<LocationSharePage> {
     return code.toString();
   }
 
+  void _onShareLocation(Position position){
+    context.read<LocationBloc>().add(LocationShare(
+        sharingCode: code,
+        uid: widget.user.uid,
+        latitude: position.latitude,
+        longitude: position.longitude)
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +104,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
                               ? ElevatedButton(
                                   onPressed: (){
                                     _toggleButton();
-                                    final p = context.read<LocationBloc>().add(GetCurrentLocation());
+                                    _onShareLocation(currentPosition);
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: ColorPalette.purple1,
