@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import '../../../core/models/user.dart';
+import '../../../core/models/user_model.dart';
 import '../data/auth_remote_data_source.dart';
 
 part 'auth_event.dart';
