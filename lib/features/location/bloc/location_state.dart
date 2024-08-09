@@ -16,3 +16,5 @@ final class LocationError extends LocationState{
   final String message;
   LocationError(this.message);
 }
+
+final class LocationShared extends LocationState{}

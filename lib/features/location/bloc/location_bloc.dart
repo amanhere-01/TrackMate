@@ -2,14 +2,19 @@ import 'package:bloc/bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:meta/meta.dart';
 import 'package:flutter/material.dart';
+import 'package:track_mate/features/location/models/shared_location_model.dart';
+
+import '../data/location_remote_data_source.dart';
 
 part 'location_event.dart';
 part 'location_state.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
-  LocationBloc() : super(LocationInitial()) {
+  final LocationRemoteDataSource _locationRemoteDataSource;
+  LocationBloc(this._locationRemoteDataSource) : super(LocationInitial()) {
     on<LocationEvent>((event, emit)  => emit(LocationLoading()));
     on<GetCurrentLocation>(_onLocationLoading);
+    on<LocationShare>(_onLocationShare);
   }
 
   Future<void> _onLocationLoading(LocationEvent event, Emitter<LocationState> emit) async{
@@ -33,6 +38,22 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       }
 
       emit(LocationLoaded(await Geolocator.getCurrentPosition()));
+    } catch(e){
+      emit(LocationError(e.toString()));
+    }
+  }
+
+  Future<void> _onLocationShare(LocationShare event, Emitter<LocationState> emit) async{
+    try {
+      _locationRemoteDataSource.shareLocation(
+        SharedLocationModel(
+            sharingCode: event.sharingCode,
+            uid: event.uid,
+            latitude: event.latitude,
+            longitude: event.longitude
+        )
+      );
+      emit(LocationShared());
     } catch(e){
       emit(LocationError(e.toString()));
     }
