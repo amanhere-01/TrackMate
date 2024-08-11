@@ -18,3 +18,9 @@ final class LocationError extends LocationState{
 }
 
 final class LocationShared extends LocationState{}
+
+final class LocationTracked extends LocationState{
+  final LocationModel locationModel;
+  LocationTracked(this.locationModel);
+}
+
