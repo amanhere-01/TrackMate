@@ -48,8 +48,8 @@ class _LocationSharePageState extends State<LocationSharePage> {
     context.read<LocationBloc>().add(LocationShare(
         sharingCode: code,
         uid: widget.user.uid,
-        latitude: position.latitude,
-        longitude: position.longitude)
+        longitude: position.longitude,
+        latitude: position.latitude)
     );
   }
 
@@ -75,7 +75,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
                 children: [
                   Expanded(
                       // height: MediaQuery.of(context).size.height/2,
-                      child: ShareLocationPageMap(currentPosition: currentPosition,)
+                      child: ShareLocationPageMap(longitude: currentPosition.longitude, latitude: currentPosition.latitude,)
                   ),
                   Container(
                     padding: const EdgeInsets.all(20),
