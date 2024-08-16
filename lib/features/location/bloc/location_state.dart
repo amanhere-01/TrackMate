@@ -17,10 +17,16 @@ final class LocationError extends LocationState{
   LocationError(this.message);
 }
 
-final class LocationShared extends LocationState{}
+final class LocationSharing extends LocationState {
+  final double latitude;
+  final double longitude;
 
-final class LocationTracked extends LocationState{
+  LocationSharing({required this.latitude, required this.longitude});
+
+}
+
+final class LocationTracking extends LocationState{
   final LocationModel locationModel;
-  LocationTracked(this.locationModel);
+  LocationTracking(this.locationModel);
 }
 

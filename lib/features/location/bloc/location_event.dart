@@ -8,13 +8,11 @@ final class GetCurrentLocation extends LocationEvent{}
 final class LocationShare extends LocationEvent{
   final String sharingCode;
   final String uid;
-  final double longitude;
-  final double latitude;
 
-  LocationShare({required this.sharingCode, required this.uid, required this.longitude, required this.latitude});
-
+  LocationShare({required this.sharingCode, required this.uid});
 }
 
+final class LocationStopSharing extends LocationEvent{}
 final class LocationTrack extends LocationEvent{
   final String code;
   LocationTrack({required this.code});
