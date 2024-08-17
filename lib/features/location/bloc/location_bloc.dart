@@ -62,31 +62,32 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
       await _positionStream?.cancel();
       _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-            (Position? position) async {
-          if (position != null) {
-            await _locationRemoteDataSource.shareLocation(
-              LocationModel(
-                sharingCode: event.sharingCode,
-                uid: event.uid,
-                latitude: position.latitude,
-                longitude: position.longitude,
-              ),
-            );
-            if (!emit.isDone) {
-              emit(LocationSharing(latitude: position.latitude, longitude: position.longitude));
+          (Position? position) async {
+            if (position != null) {
+              await _locationRemoteDataSource.shareLocation(
+                LocationModel(
+                  sharingCode: event.sharingCode,
+                  uid: event.uid,
+                  latitude: position.latitude,
+                  longitude: position.longitude,
+                ),
+              );
+              if (!emit.isDone) {
+                emit(LocationSharing(latitude: position.latitude, longitude: position.longitude));
+              }
+            } else {
+              if (!emit.isDone) {
+                emit(LocationError('Error fetching location!'));
+              }
             }
-          } else {
+          },
+          onError: (e) {
             if (!emit.isDone) {
-              emit(LocationError('Error fetching location!'));
+              emit(LocationError(e.toString()));
             }
-          }
-        },
-        onError: (e) {
-          if (!emit.isDone) {
-            emit(LocationError(e.toString()));
-          }
-        },
+          },
       );
+      await _positionStream?.asFuture();
     } catch (e) {
       if (!emit.isDone) {
         emit(LocationError(e.toString()));
@@ -102,6 +103,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   Future<void> _onLocationTrack(LocationTrack event, Emitter<LocationState> emit) async {
     try {
       await _locationStream?.cancel();
+
       _locationStream = _locationRemoteDataSource.trackLocation(event.code).listen(
             (snapshot) {
           if (!emit.isDone) {
@@ -114,6 +116,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
           }
         },
       );
+      await _locationStream?.asFuture();
     } catch (e) {
       if (!emit.isDone) {
         emit(LocationError(e.toString()));

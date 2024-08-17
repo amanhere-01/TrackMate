@@ -18,4 +18,18 @@ final class LocationTrack extends LocationEvent{
   LocationTrack({required this.code});
 }
 
+final class LocationDataReceived extends LocationEvent{
+  final LocationModel locationModel;
+
+  LocationDataReceived({required this.locationModel});
+
+}
+
+final class LocationTrackingError extends LocationEvent{
+  final String error;
+
+  LocationTrackingError( this.error);
+
+}
+
 final class LocationStopTracking extends LocationEvent{}
