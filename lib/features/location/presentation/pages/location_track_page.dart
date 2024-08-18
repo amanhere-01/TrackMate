@@ -27,9 +27,9 @@ class _LocationTrackPageState extends State<LocationTrackPage> {
       },
       builder: (context, state) {
         if(state is LocationLoading){
-          return const Loader(color: Colors.white,);
+          return const Loader(color: Colors.red ,);
         }
-        if(state is LocationTracked){
+        if(state is LocationTracking){
           final double lon = state.locationModel.longitude;
           final double lat = state.locationModel.latitude;
           return SafeArea(
