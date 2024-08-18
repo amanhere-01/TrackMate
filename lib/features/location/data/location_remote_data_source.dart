@@ -3,7 +3,7 @@ import 'package:track_mate/features/location/models/location_model.dart';
 
 abstract interface class LocationRemoteDataSource{
   Future<void> shareLocation(LocationModel sharedLocation);
-  Future<LocationModel> trackLocation(String code);
+  Stream<LocationModel> trackLocation(String code);
 }
 
 class LocationRemoteDataSourceImpl implements LocationRemoteDataSource{
@@ -20,19 +20,18 @@ class LocationRemoteDataSourceImpl implements LocationRemoteDataSource{
   }
 
   @override
-  Future<LocationModel> trackLocation(String code) async {
+  Stream<LocationModel> trackLocation(String code) {
     try{
       final docRef = db.collection("shared_location").doc(code);
-      final docSnapshot = await docRef.get();
-      if(docSnapshot.exists){
-        return LocationModel.fromMap(docSnapshot.data() as Map<String,dynamic>);
-      } else{
-        throw Exception('Location not found for code: $code');
-      }
+      return docRef.snapshots().map((snapshot){
+        if(snapshot.exists){
+          return LocationModel.fromMap(snapshot.data()!);
+        } else {
+          throw Exception('Location not found for code: $code');
+        }
+      });
     } catch(e){
       throw Exception(e.toString());
     }
   }
-
-
 }
