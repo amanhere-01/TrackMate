@@ -11,7 +11,7 @@ part 'location_state.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final LocationRemoteDataSource _locationRemoteDataSource;
-  StreamSubscription<Position>? _positionStream;
+  StreamSubscription<Position>? _positionStreamSubscription;
   StreamSubscription<LocationModel>? _locationStream;
 
   LocationBloc(this._locationRemoteDataSource) : super(LocationInitial()) {
@@ -43,13 +43,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       }
 
       final position = await Geolocator.getCurrentPosition();
-      if (!emit.isDone) {
-        emit(LocationLoaded(position));
-      }
+      emit(LocationLoaded(position));
+
     } catch (e) {
-      if (!emit.isDone) {
         emit(LocationError("Failed to get current location: ${e.toString()}"));
-      }
     }
   }
 
@@ -57,46 +54,40 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     try {
       const LocationSettings locationSettings = LocationSettings(
         accuracy: LocationAccuracy.bestForNavigation,
-        distanceFilter: 10,
+        distanceFilter: 0,
       );
 
-      await _positionStream?.cancel();
-      _positionStream = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
-          (Position? position) async {
-            if (position != null) {
-              await _locationRemoteDataSource.shareLocation(
-                LocationModel(
-                  sharingCode: event.sharingCode,
-                  uid: event.uid,
-                  latitude: position.latitude,
-                  longitude: position.longitude,
-                ),
-              );
-              if (!emit.isDone) {
-                emit(LocationSharing(latitude: position.latitude, longitude: position.longitude));
-              }
-            } else {
-              if (!emit.isDone) {
-                emit(LocationError('Error fetching location!'));
-              }
-            }
-          },
-          onError: (e) {
-            if (!emit.isDone) {
-              emit(LocationError(e.toString()));
-            }
-          },
+      await _positionStreamSubscription?.cancel(); // Cancel previous subscription
+      _positionStreamSubscription = Geolocator.getPositionStream(locationSettings: locationSettings).listen(
+            (Position? position) async {
+          if (position != null) {
+            await _locationRemoteDataSource.shareLocation(
+              LocationModel(
+                sharingCode: event.sharingCode,
+                uid: event.uid,
+                latitude: position.latitude,
+                longitude: position.longitude,
+              ),
+            );
+            emit(LocationSharing(latitude: position.latitude, longitude: position.longitude));
+          } else {
+            emit(LocationError('Error fetching location!'));
+          }
+        },
+        onError: (e) {
+          emit(LocationError(e.toString()));
+        },
       );
-      await _positionStream?.asFuture();
+
+      // Await the first location update (or an error)
+      await _positionStreamSubscription?.asFuture();
     } catch (e) {
-      if (!emit.isDone) {
-        emit(LocationError(e.toString()));
-      }
+      emit(LocationError(e.toString()));
     }
   }
 
   Future<void> _onLocationStopSharing(LocationStopSharing event, Emitter<LocationState> emit) async {
-    await _positionStream?.cancel();
+    await _positionStreamSubscription?.cancel();
     emit(LocationError("Location sharing stopped"));
   }
 
@@ -105,24 +96,20 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       await _locationStream?.cancel();
 
       _locationStream = _locationRemoteDataSource.trackLocation(event.code).listen(
-            (snapshot) {
-          if (!emit.isDone) {
-            emit(LocationTracking(snapshot));
-          }
+        (snapshot) {
+          emit(LocationTracking(snapshot));
         },
         onError: (e) {
-          if (!emit.isDone) {
-            emit(LocationError(e.toString()));
-          }
+          emit(LocationError(e.toString()));
         },
       );
+      // Ensures the event handler remains active
       await _locationStream?.asFuture();
     } catch (e) {
-      if (!emit.isDone) {
-        emit(LocationError(e.toString()));
-      }
+      emit(LocationError(e.toString()));
     }
   }
+
 
   Future<void> _onLocationStopTracking(LocationStopTracking event, Emitter<LocationState> emit) async {
     await _locationStream?.cancel();
