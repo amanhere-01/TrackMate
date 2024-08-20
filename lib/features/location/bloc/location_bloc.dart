@@ -88,6 +88,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
   Future<void> _onLocationStopSharing(LocationStopSharing event, Emitter<LocationState> emit) async {
     await _positionStreamSubscription?.cancel();
+    // emit(LocationInitial());
     emit(LocationError("Location sharing stopped"));
   }
 

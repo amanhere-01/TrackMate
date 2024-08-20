@@ -13,23 +13,10 @@ final class LocationShare extends LocationEvent{
 }
 
 final class LocationStopSharing extends LocationEvent{}
+
 final class LocationTrack extends LocationEvent{
   final String code;
   LocationTrack({required this.code});
-}
-
-final class LocationDataReceived extends LocationEvent{
-  final LocationModel locationModel;
-
-  LocationDataReceived({required this.locationModel});
-
-}
-
-final class LocationTrackingError extends LocationEvent{
-  final String error;
-
-  LocationTrackingError( this.error);
-
 }
 
 final class LocationStopTracking extends LocationEvent{}
