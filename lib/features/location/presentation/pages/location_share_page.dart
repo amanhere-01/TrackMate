@@ -6,6 +6,8 @@ import 'package:geolocator/geolocator.dart';
 import 'package:track_mate/core/theme/color_palette.dart';
 import 'package:track_mate/core/utils/show_snackbar.dart';
 import 'package:track_mate/features/location/bloc/location_bloc.dart';
+import 'package:track_mate/features/location/presentation/pages/home_page.dart';
+import 'package:track_mate/features/location/presentation/widgets/alert_dialog_box.dart';
 import 'package:track_mate/features/location/presentation/widgets/share_location_page_map.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/widgets/loader.dart';
@@ -111,7 +113,10 @@ class _LocationSharePageState extends State<LocationSharePage> {
                     if (!_isSharing) {
                       context.read<LocationBloc>().add(LocationShare(sharingCode: code, uid: widget.user.uid));
                     } else {
-                      context.read<LocationBloc>().add(LocationStopTracking());
+                      showDialog(context: context, builder: (context){
+                        return const AlertDialogBox(actionText: 'Sharing');
+                      });
+                      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage(user: widget.user)), (route) => false);
                     }
                     _toggleButton();
                   },
