@@ -75,74 +75,34 @@ class _LocationSharePageState extends State<LocationSharePage> {
   }
 
   Widget _buildLocationUI(double longitude, double latitude) {
-    return Column(
-      children: [
-        Expanded(
-          child: ShareLocationPageMap(
-            longitude: longitude,
-            latitude: latitude,
-          ),
+    return Stack(
+      children:[
+        ShareLocationPageMap(
+          longitude: longitude,
+          latitude: latitude,
         ),
         Container(
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: ColorPalette.white3,
-          ),
-          child: Column(
-            children: [
-              Text(
-                'Share code',
+          alignment: Alignment.topCenter,
+          margin: const EdgeInsets.all(10),
+          child: Card(
+            elevation: 10,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15)
+            ),
+            color: ColorPalette.primary,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+              child: Text('Your sharing code is $code',
                 style: TextStyle(
-                  fontSize: 20,
+                  fontSize: 16,
                   fontWeight: FontWeight.w400,
                   color: ColorPalette.white7,
                 ),
               ),
-              Text(
-                code,
-                style: const TextStyle(
-                  fontSize: 50,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 10),
-                child: ElevatedButton(
-                  onPressed: () {
-                    if (!_isSharing) {
-                      context.read<LocationBloc>().add(LocationShare(sharingCode: code, uid: widget.user.uid));
-                    } else {
-                      showDialog(context: context, builder: (context){
-                        return const AlertDialogBox(actionText: 'Sharing');
-                      });
-                      // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage(user: widget.user)), (route) => false);
-                    }
-                    _toggleButton();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _isSharing
-                        ? ColorPalette.red1
-                        : ColorPalette.purple1,
-                    minimumSize: const Size(double.infinity, 50),
-                    foregroundColor: _isSharing
-                        ? ColorPalette.red2
-                        : ColorPalette.purple2,
-                    elevation: 10,
-                  ),
-                  child: Text(
-                    _isSharing ? 'Stop sharing' : 'Start sharing',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
-      ],
+        )
+      ]
     );
   }
 }
