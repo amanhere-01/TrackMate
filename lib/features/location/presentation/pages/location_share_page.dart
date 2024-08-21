@@ -50,6 +50,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Sharing location'),
+        backgroundColor: ColorPalette.lightGreen1 ,
       ),
       body: BlocConsumer<LocationBloc, LocationState>(
         listener: (context, state) {
@@ -92,11 +93,23 @@ class _LocationSharePageState extends State<LocationSharePage> {
             color: ColorPalette.primary,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-              child: Text('Your sharing code is $code',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w400,
-                  color: ColorPalette.white7,
+              child: RichText(
+                text: TextSpan(
+                  text: 'Your sharing code is: ',
+                  style:  TextStyle(
+                    fontSize: 18,
+                    color: ColorPalette.white7,
+                  ),
+                  children: [
+                    TextSpan(
+                      text: code,
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black
+                      )
+                    )
+                  ]
                 ),
               ),
             ),
