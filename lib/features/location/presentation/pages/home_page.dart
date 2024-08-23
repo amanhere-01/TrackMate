@@ -30,10 +30,10 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(onPressed: () {
-                  showDialog(context: context, builder: (context) => AlertDialogBox(actionText: 'homepage') );
-                  },
-                  child: Text('dsdsdsdsdsd'),),
+                // TextButton(onPressed: () {
+                //   showDialog(context: context, builder: (context) => const AlertDialogBox() );
+                //   },
+                //   child: Text('dsdsdsdsdsd'),),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.share_location),
                   onPressed: (){

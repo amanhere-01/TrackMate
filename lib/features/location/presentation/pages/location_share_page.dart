@@ -210,7 +210,10 @@ class _LocationSharePageState extends State<LocationSharePage> {
                 submittedIcon: const Icon(Icons.close ,size: 25,),
                 sliderButtonIcon: Icon(Icons.close, size: 25, color: ColorPalette.red1,),
                 onSubmit: (){
-                  context.read<LocationBloc>().add(LocationStopSharing());
+                  showDialog(context: context, builder: (context){
+                    return AlertDialogBox(user: widget.user,);
+                  });
+                  // context.read<LocationBloc>().add(LocationStopSharing());
                 },
               ),
             )
