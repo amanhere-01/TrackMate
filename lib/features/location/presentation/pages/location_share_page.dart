@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 import 'package:track_mate/core/theme/color_palette.dart';
 import 'package:track_mate/core/utils/show_snackbar.dart';
 import 'package:track_mate/features/location/bloc/location_bloc.dart';
@@ -47,12 +48,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sharing location'),
-        backgroundColor: ColorPalette.lightGreen1 ,
-      ),
-      body: BlocConsumer<LocationBloc, LocationState>(
+    return BlocConsumer<LocationBloc, LocationState>(
         listener: (context, state) {
           if (state is LocationError) {
             showSnackbar(context, state.message);
@@ -60,62 +56,165 @@ class _LocationSharePageState extends State<LocationSharePage> {
         },
         builder: (context, state) {
           if (state is LocationLoading) {
-            return const Loader(color: Colors.black);
+            return const Loader(color: Colors.white);
           }
           if (state is LocationLoaded) {
             Position currentPosition = state.position;
-            return _buildLocationUI(currentPosition.longitude, currentPosition.latitude);
+            return Scaffold(
+              appBar: AppBar(
+                title: const Text('Sharing location'),
+                backgroundColor: ColorPalette.lightGreen1 ,
+              ),
+              body: Column(
+                children: [
+                  Expanded(
+                    child: Stack(
+                      children:[
+                        ShareLocationPageMap(
+                          longitude: currentPosition.longitude,
+                          latitude: currentPosition.latitude,
+                        ),
+                        Container(
+                          alignment: Alignment.topCenter,
+                          margin: const EdgeInsets.all(10),
+                          child: Card(
+                            elevation: 10,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15)
+                            ),
+                            color: ColorPalette.lightGreen1,
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                              child: RichText(
+                                text: TextSpan(
+                                    text: 'Your sharing code is: ',
+                                    style:  const TextStyle(
+                                      fontSize: 18,
+                                      color: Colors.black,
+                                    ),
+                                    children: [
+                                      TextSpan(
+                                          text: code,
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: ColorPalette.green2
+                                          )
+                                      )
+                                    ]
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ]
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 50,vertical: 5),
+                    child: SlideAction(
+                      height: 65,
+                      sliderRotate: false,
+                      innerColor: ColorPalette.primary,
+                      outerColor: ColorPalette.lightGreen1,
+                      elevation: 10,
+                      text: 'Start Sharing',
+                      textStyle: const TextStyle(
+                          fontSize: 20,
+                          color: Colors.black
+                      ),
+                      submittedIcon: const Icon(Icons.keyboard_double_arrow_right,size: 25),
+                      sliderButtonIcon: const Icon(Icons.keyboard_double_arrow_right, size: 25,),
+                      onSubmit: (){
+                        context.read<LocationBloc>().add(LocationShare(sharingCode: code, uid: widget.user.uid));
+                      },
+                    ),
+                  )
+                ],
+              ),
+            );
           }
           if (state is LocationSharing) {
             return _buildLocationUI(state.longitude, state.latitude);
           }
           return const Center(child: Text('Unexpected Error!'));
         },
-      ),
-    );
+      );
   }
 
   Widget _buildLocationUI(double longitude, double latitude) {
-    return Stack(
-      children:[
-        ShareLocationPageMap(
-          longitude: longitude,
-          latitude: latitude,
-        ),
-        Container(
-          alignment: Alignment.topCenter,
-          margin: const EdgeInsets.all(10),
-          child: Card(
-            elevation: 10,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15)
-            ),
-            color: ColorPalette.primary,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
-              child: RichText(
-                text: TextSpan(
-                  text: 'Your sharing code is: ',
-                  style:  TextStyle(
-                    fontSize: 18,
-                    color: ColorPalette.white7,
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          children: [
+            Expanded(
+              child: Stack(
+                children:[
+                  ShareLocationPageMap(
+                    longitude: longitude,
+                    latitude: latitude,
                   ),
-                  children: [
-                    TextSpan(
-                      text: code,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black
-                      )
-                    )
-                  ]
-                ),
+                  Container(
+                    alignment: Alignment.topCenter,
+                    margin: const EdgeInsets.all(10),
+                    child: Card(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15)
+                      ),
+                      color: ColorPalette.red1,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 5),
+                        child: RichText(
+                          text: TextSpan(
+                            text: 'Your sharing code is: ',
+                            style:  const TextStyle(
+                              fontSize: 18,
+                              color:Colors.black,
+                            ),
+                            children: [
+                              TextSpan(
+                                text: code,
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red
+                                )
+                              )
+                            ]
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ]
               ),
             ),
-          ),
-        )
-      ]
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 50,vertical: 5),
+              child: SlideAction(
+                height: 65,
+                innerColor: ColorPalette.red2,
+                outerColor: ColorPalette.red1,
+                elevation: 10,
+                text: 'Stop Sharing',
+                textStyle: TextStyle(
+                  fontSize: 20,
+                  color: ColorPalette.red2,
+                  fontWeight: FontWeight.bold
+                ),
+                submittedIcon: Icon(Icons.close ,size: 25, color: ColorPalette.red1,),
+                sliderButtonIcon: Icon(Icons.close, size: 25, color: ColorPalette.red1,),
+                onSubmit: (){
+                  context.read<LocationBloc>().add(LocationStopSharing());
+                },
+        
+        
+              ),
+            )
+          ],
+        ),
+      ),
     );
   }
 }
