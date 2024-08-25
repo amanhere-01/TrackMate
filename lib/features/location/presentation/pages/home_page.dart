@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
                 ElevatedButton.icon(
                   icon: const Icon(Icons.track_changes),
                   onPressed: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const LocationTrackPage()));
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => LocationTrackPage(user: widget.user,)));
                   },
                   label: const Text(
                     'Track Location',

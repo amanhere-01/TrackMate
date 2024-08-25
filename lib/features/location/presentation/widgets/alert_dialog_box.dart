@@ -8,13 +8,14 @@ import '../pages/home_page.dart';
 
 class AlertDialogBox extends StatelessWidget {
   final UserModel user;
-  const AlertDialogBox({super.key, required this.user});
+  final String actionText;
+  const AlertDialogBox({super.key, required this.user, required this.actionText});
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Stop Sharing?',
-        style: TextStyle(
+      title: Text('Stop $actionText?',
+        style: const TextStyle(
             fontWeight: FontWeight.w600
         ),
       ),
@@ -27,8 +28,12 @@ class AlertDialogBox extends StatelessWidget {
       actions: [
         TextButton(
             onPressed: (){
+              if(actionText=='Sharing'){
+                context.read<LocationBloc>().add(LocationStopSharing());
+              } else{
                 context.read<LocationBloc>().add(LocationStopTracking());
-                // Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage(user: user)), (route) => false);
+              }
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_) => HomePage(user: user)), (route) => false);
             },
           child: const Text('Yes',
             style: TextStyle(

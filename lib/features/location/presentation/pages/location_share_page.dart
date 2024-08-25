@@ -137,7 +137,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
               submittedIcon: const Icon(Icons.keyboard_double_arrow_right,size: 25),
               sliderButtonIcon: const Icon(Icons.keyboard_double_arrow_right, size: 25,),
               onSubmit: (){
-                context.read<LocationBloc>().add(LocationShare(sharingCode: code, uid: widget.user.uid));
+                context.read<LocationBloc>().add(LocationShare(sharingCode: code, sharedUserUid: widget.user.uid, sharedUserName: widget.user.name));
               },
             ),
           )
@@ -211,7 +211,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
                 sliderButtonIcon: Icon(Icons.close, size: 25, color: ColorPalette.red1,),
                 onSubmit: (){
                   showDialog(context: context, builder: (context){
-                    return AlertDialogBox(user: widget.user,);
+                    return AlertDialogBox(user: widget.user, actionText: 'Sharing',);
                   });
                   // context.read<LocationBloc>().add(LocationStopSharing());
                 },
