@@ -7,9 +7,10 @@ final class GetCurrentLocation extends LocationEvent{}
 
 final class LocationShare extends LocationEvent{
   final String sharingCode;
-  final String uid;
+  final String sharedUserUid;
+  final String sharedUserName;
 
-  LocationShare({required this.sharingCode, required this.uid});
+  LocationShare({required this.sharingCode, required this.sharedUserUid, required this.sharedUserName});
 }
 
 final class LocationStopSharing extends LocationEvent{}

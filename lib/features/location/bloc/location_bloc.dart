@@ -13,6 +13,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final LocationRemoteDataSource _locationRemoteDataSource;
   StreamSubscription<Position>? _positionStreamSubscription;
   StreamSubscription<LocationModel>? _locationStream;
+  late Position _currentPosition;
 
   LocationBloc(this._locationRemoteDataSource) : super(LocationInitial()) {
     on<LocationEvent>((event, emit) => emit(LocationLoading()));
@@ -42,8 +43,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
         emit(LocationError('Location permissions are permanently denied, we cannot request permissions.'));
       }
 
-      final position = await Geolocator.getCurrentPosition();
-      emit(LocationLoaded(position));
+      _currentPosition= await Geolocator.getCurrentPosition();
+      emit(LocationLoaded(_currentPosition));
 
     } catch (e) {
         emit(LocationError("Failed to get current location: ${e.toString()}"));
@@ -64,7 +65,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
             await _locationRemoteDataSource.shareLocation(
               LocationModel(
                 sharingCode: event.sharingCode,
-                uid: event.uid,
+                sharedUserUid: event.sharedUserUid,
+                sharedUserName: event.sharedUserName,
                 latitude: position.latitude,
                 longitude: position.longitude,
               ),
@@ -88,7 +90,6 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
   Future<void> _onLocationStopSharing(LocationStopSharing event, Emitter<LocationState> emit) async {
     await _positionStreamSubscription?.cancel();
-    // emit(LocationInitial());
     emit(LocationError("Location sharing stopped"));
   }
 
