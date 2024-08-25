@@ -22,6 +22,7 @@ abstract interface class AuthRemoteDataSource{
 
 class AuthRemoteDataSourceImpl implements AuthRemoteDataSource{
   final _firebase = FirebaseAuth.instance;
+  final db = FirebaseFirestore.instance;
 
   @override
   UserModel getCurrentUserModel() {
@@ -44,10 +45,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource{
       if(res.user == null){
         throw Exception('Sign-up failed: User is null. ');
       }
+      await storeUserData(uid: res.user!.uid, name: name, email: email);
       return UserModel.fromDatabase(res.user!);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        throw Exception('The email address is already in use by another account.');
+        throw Exception('The email address is already in use.');
       } else {
         throw Exception(e.toString());
       }
@@ -78,5 +80,23 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource{
       throw Exception(e.toString());
     }
   }
+
+  Future<void> storeUserData({
+      required String uid,
+      required String name,
+      required String email
+  }) async{
+    try{
+      final docRef = db.collection('user_data').doc(uid);
+      await docRef.set({
+        'name': name,
+        'email': email,
+        'uid': uid,
+      });
+    } catch(e){
+      throw Exception('Failed to store user data: $e');
+    }
+  }
+
 
 }
