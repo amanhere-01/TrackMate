@@ -5,7 +5,6 @@ import 'package:track_mate/core/theme/color_palette.dart';
 import 'package:track_mate/features/location/presentation/pages/location_share_page.dart';
 import 'package:track_mate/features/location/presentation/pages/location_track_page.dart';
 import 'package:track_mate/features/location/presentation/widgets/alert_dialog_box.dart';
-import 'package:track_mate/features/location/presentation/widgets/share_location_page_map.dart';
 
 class HomePage extends StatefulWidget {
   final UserModel user;
@@ -31,9 +30,9 @@ class _HomePageState extends State<HomePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // TextButton(onPressed: () {
-                //   showDialog(context: context, builder: (context) => const AlertDialogBox() );
-                //   },
-                //   child: Text('dsdsdsdsdsd'),),
+                //   Navigator.push(context, MaterialPageRoute(builder: (_)=> Example()));
+                // },
+                // child: Text('dsdsdsdsdsd'),),
                 ElevatedButton.icon(
                   icon: const Icon(Icons.share_location),
                   onPressed: (){

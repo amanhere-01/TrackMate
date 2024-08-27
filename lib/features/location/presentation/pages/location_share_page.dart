@@ -9,9 +9,9 @@ import 'package:track_mate/core/utils/show_snackbar.dart';
 import 'package:track_mate/features/location/bloc/location_bloc.dart';
 import 'package:track_mate/features/location/presentation/pages/home_page.dart';
 import 'package:track_mate/features/location/presentation/widgets/alert_dialog_box.dart';
-import 'package:track_mate/features/location/presentation/widgets/share_location_page_map.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/widgets/loader.dart';
+import '../widgets/map_widget.dart';
 
 class LocationSharePage extends StatefulWidget {
   final UserModel user;
@@ -81,7 +81,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
           Expanded(
             child: Stack(
                 children:[
-                  ShareLocationPageMap(
+                  MapWidget(
                     longitude: longitude,
                     latitude: latitude,
                   ),
@@ -130,12 +130,13 @@ class _LocationSharePageState extends State<LocationSharePage> {
               outerColor: ColorPalette.lightGreen1,
               elevation: 10,
               text: 'Start Sharing',
-              textStyle: const TextStyle(
+              textStyle: TextStyle(
                   fontSize: 20,
-                  color: Colors.black
+                  color: ColorPalette.green2,
+                fontWeight: FontWeight.bold
               ),
               submittedIcon: const Icon(Icons.keyboard_double_arrow_right,size: 25),
-              sliderButtonIcon: const Icon(Icons.keyboard_double_arrow_right, size: 25,),
+              sliderButtonIcon: Icon(Icons.keyboard_double_arrow_right, size: 25, color: ColorPalette.green2,),
               onSubmit: (){
                 context.read<LocationBloc>().add(LocationShare(sharingCode: code, sharedUserUid: widget.user.uid, sharedUserName: widget.user.name));
               },
@@ -154,7 +155,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
             Expanded(
               child: Stack(
                 children:[
-                  ShareLocationPageMap(
+                  MapWidget(
                     longitude: longitude,
                     latitude: latitude,
                   ),
