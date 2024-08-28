@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:pinput/pinput.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:track_mate/core/models/user_model.dart';
 import 'package:track_mate/core/theme/theme.dart';
@@ -25,6 +26,20 @@ class LocationTrackPage extends StatefulWidget {
 
 class _LocationTrackPageState extends State<LocationTrackPage> {
   final _codeController = TextEditingController();
+  final defaultPinTheme = PinTheme(
+    width: 56,
+    height: 60,
+    textStyle: const TextStyle(
+        fontSize: 25,
+        color: Colors.white,
+        fontWeight: FontWeight.w600
+    ),
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: ColorPalette.white4
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<LocationBloc, LocationState>(
@@ -112,76 +127,137 @@ class _LocationTrackPageState extends State<LocationTrackPage> {
             ),
           );
         }
+
+
         return Scaffold(
           appBar: AppBar(
             title: const Text("Tracking location"),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Card(
-              color: ColorPalette.cyan1,
-              elevation: 10,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30)
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                   const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 30),
-                    child: Text('Enter the code',
+          body: SingleChildScrollView(
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Enter the code',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize:40,
-                        color: ColorPalette.gradient1
+                        color: ColorPalette.darkBlue1
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: 30),
-                    child: TextField(
-                      controller: _codeController,
-                      keyboardType: TextInputType.number,
-                      style: TextStyle(
-                        fontSize: 20
+                    const SizedBox(height: 20,),
+                    Pinput(
+                      length: 6,
+                      showCursor: false,
+                      defaultPinTheme: defaultPinTheme,
+                      focusedPinTheme: defaultPinTheme.copyDecorationWith(
+                        border: Border.all(color: ColorPalette.darkBlue2),
                       ),
-                      decoration: InputDecoration(
-                        enabledBorder: OutlineInputBorder(
-                          borderSide: BorderSide(color: ColorPalette.gradient1),
-                          borderRadius: BorderRadius.circular(30)
-                        )
+                      submittedPinTheme:defaultPinTheme.copyWith(
+                          decoration: defaultPinTheme.decoration?.copyWith(
+                          color: ColorPalette.darkBlue2
+                        ),
+                      ),
+                      onCompleted: (enteredCode) => code = enteredCode,
+                    ),
+                    const SizedBox(height: 20,),
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 10,horizontal: MediaQuery.of(context).size.width/10),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            if(_codeController.text.isNotEmpty && _codeController.text.length==6){
+                              context.read<LocationBloc>().add(LocationTrack(code: _codeController.text));
+                            }
+                            else if(_codeController.text.length<6 || _codeController.text.length>6){
+                              showSnackbar(context, 'Pleas enter valid code');
+                            }
+                            else{
+                              showSnackbar(context, 'Please enter the code');
+                            }
+                          },
+                          child: const Text('Track',
+                            style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize:20,
+                                color: ColorPalette.gradient1
+                            ),
+                          )
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 10,),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: MediaQuery.of(context).size.width/10),
-                    child: ElevatedButton(
-                        onPressed: () {
-                          if(_codeController.text.isNotEmpty && _codeController.text.length==6){
-                            context.read<LocationBloc>().add(LocationTrack(code: _codeController.text));
-                          }
-                          else if(_codeController.text.length<6 || _codeController.text.length>6){
-                            showSnackbar(context, 'Pleas enter valid code');
-                          }
-                          else{
-                            showSnackbar(context, 'Please enter the code');
-                          }
-                        },
-                        child: const Text('Track',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize:20,
-                            color: ColorPalette.gradient1
-                          ),
-                        )
-                    ),
-                  ),
-                  const SizedBox(height: 20,),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
+          // body: Padding(
+          //   padding: const EdgeInsets.all(20.0),
+          //   child: Card(
+          //     color: ColorPalette.cyan1,
+          //     elevation: 20,
+          //     shape: RoundedRectangleBorder(
+          //       borderRadius: BorderRadius.circular(30)
+          //     ),
+          //     shadowColor: Colors.red,
+          //     child: Column(
+          //       mainAxisSize: MainAxisSize.min,
+          //       children: [
+          //          const Padding(
+          //           padding: EdgeInsets.symmetric(vertical: 30),
+          //           child: Text('Enter the code',
+          //             style: TextStyle(
+          //               fontWeight: FontWeight.bold,
+          //               fontSize:40,
+          //               color: ColorPalette.gradient1
+          //             ),
+          //           ),
+          //         ),
+          //         Padding(
+          //           padding: EdgeInsets.symmetric(vertical: 10,horizontal: 30),
+          //           child: TextField(
+          //             controller: _codeController,
+          //             keyboardType: TextInputType.number,
+          //             style: TextStyle(
+          //               fontSize: 20
+          //             ),
+          //             decoration: InputDecoration(
+          //               enabledBorder: OutlineInputBorder(
+          //                 borderSide: BorderSide(color: ColorPalette.gradient1),
+          //                 borderRadius: BorderRadius.circular(30)
+          //               )
+          //             ),
+          //           ),
+          //         ),
+          //         const SizedBox(height: 10,),
+          //         Container(
+          //           padding: EdgeInsets.symmetric(vertical: 10,horizontal: MediaQuery.of(context).size.width/10),
+          //           child: ElevatedButton(
+          //               onPressed: () {
+          //                 if(_codeController.text.isNotEmpty && _codeController.text.length==6){
+          //                   context.read<LocationBloc>().add(LocationTrack(code: _codeController.text));
+          //                 }
+          //                 else if(_codeController.text.length<6 || _codeController.text.length>6){
+          //                   showSnackbar(context, 'Pleas enter valid code');
+          //                 }
+          //                 else{
+          //                   showSnackbar(context, 'Please enter the code');
+          //                 }
+          //               },
+          //               child: const Text('Track',
+          //                 style: TextStyle(
+          //                   fontWeight: FontWeight.bold,
+          //                   fontSize:20,
+          //                   color: ColorPalette.gradient1
+          //                 ),
+          //               )
+          //           ),
+          //         ),
+          //         const SizedBox(height: 20,),
+          //       ],
+          //     ),
+          //   ),
+          // ),
         );
       },
     );
