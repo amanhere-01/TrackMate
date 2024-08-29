@@ -5,6 +5,7 @@ import 'package:track_mate/core/theme/color_palette.dart';
 import 'package:track_mate/features/location/presentation/pages/location_share_page.dart';
 import 'package:track_mate/features/location/presentation/pages/location_track_page.dart';
 import 'package:track_mate/features/location/presentation/widgets/alert_dialog_box.dart';
+import 'package:track_mate/features/location/presentation/widgets/custom_app_bar.dart';
 
 class HomePage extends StatefulWidget {
   final UserModel user;
@@ -15,22 +16,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const CameraPosition initial = CameraPosition(
-    target: LatLng(37.42796133580664, -122.085749655962),
-    zoom: 14.4746,
-  );
 
   @override
   Widget build(BuildContext context) {
     return   Scaffold(
-        // appBar: AppBar(),
+        appBar: customAppBar(topColor: ColorPalette.peach, bottomColor: ColorPalette.peach1, text: 'T R A C K  M A T E',),
         body: SafeArea(
           child: Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 // TextButton(onPressed: () {
-                //   Navigator.push(context, MaterialPageRoute(builder: (_)=> Example()));
+                //   Navigator.push(context, MaterialPageRoute(builder: (_)=> AlertDialogBox(user: widget.user, actionText: 'actionText')));
                 // },
                 // child: Text('dsdsdsdsdsd'),),
                 ElevatedButton.icon(

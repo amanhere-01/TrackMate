@@ -9,6 +9,7 @@ import 'package:track_mate/core/models/user_model.dart';
 import 'package:track_mate/core/theme/theme.dart';
 import 'package:track_mate/features/auth/presentaion/widgets/glass_box.dart';
 import 'package:track_mate/features/location/bloc/location_bloc.dart';
+import 'package:track_mate/features/location/presentation/widgets/custom_app_bar.dart';
 
 import '../../../../core/theme/color_palette.dart';
 import '../../../../core/utils/show_snackbar.dart';
@@ -26,19 +27,34 @@ class LocationTrackPage extends StatefulWidget {
 
 class _LocationTrackPageState extends State<LocationTrackPage> {
   late String _code = '0';
+  final FocusNode _focusNode = FocusNode();
   final defaultPinTheme = PinTheme(
     width: 56,
     height: 60,
     textStyle: const TextStyle(
-        fontSize: 25,
-        color: Colors.white,
+        fontSize: 30,
+        color: Colors.black,
         fontWeight: FontWeight.w600
     ),
     decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(20),
-        color: ColorPalette.white4
+        color: ColorPalette.blue1
     ),
   );
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _focusNode.requestFocus();
+    });
+  }
+
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,13 +66,14 @@ class _LocationTrackPageState extends State<LocationTrackPage> {
       },
       builder: (context, state){
         if(state is LocationLoading){
-          return const Loader(color: Colors.red ,);
+          return const Loader(color: Colors.black ,);
         }
         if(state is LocationTracking){
           final double lon = state.locationModel.longitude;
           final double lat = state.locationModel.latitude;
           final String name = state.locationModel.sharedUserName;
           return Scaffold(
+            backgroundColor: ColorPalette.cyan,
             body: SafeArea(
               child: Column(
                 children: [
@@ -79,14 +96,14 @@ class _LocationTrackPageState extends State<LocationTrackPage> {
                                 text: TextSpan(
                                     text: 'Tracking location of ',
                                     style:  const TextStyle(
-                                      fontSize: 20,
+                                      fontSize: 18,
                                       color: Colors.black,
                                     ),
                                     children: [
                                       TextSpan(
                                           text: name,
                                           style: const TextStyle(
-                                              fontSize: 22,
+                                              fontSize: 20,
                                               fontWeight: FontWeight.bold,
                                               color: ColorPalette.gradient2
                                           )
@@ -95,8 +112,8 @@ class _LocationTrackPageState extends State<LocationTrackPage> {
                                 ),
                               ),
                             ),
-                            ),
                           ),
+                        ),
                       ],
                     ),
                   ),
@@ -130,70 +147,68 @@ class _LocationTrackPageState extends State<LocationTrackPage> {
 
         return Scaffold(
           backgroundColor: ColorPalette.white2,
-          appBar: AppBar(
-            title: const Text("Tracking location"),
-            backgroundColor: ColorPalette.white2,
-          ),
+          appBar: customAppBar(topColor: ColorPalette.cyan1, bottomColor: ColorPalette.blue1, text: 'T R A C K   L O C A T I O N'),
           body: SingleChildScrollView(
-            child: Center(
-              child: Container(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const Text('Enter the code',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize:40,
-                        color: ColorPalette.darkBlue1
+            child: Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  const Text('Enter the code',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize:40,
+                      color: ColorPalette.blue3
+                    ),
+                  ),
+                  const SizedBox(height: 20,),
+                  Pinput(
+                    length: 6,
+                    showCursor: false,
+                    focusNode: _focusNode,
+                    defaultPinTheme: defaultPinTheme,
+                    focusedPinTheme: defaultPinTheme.copyDecorationWith(
+                      border: Border.all(
+                          color: ColorPalette.blue2,
+                          width: 3
                       ),
                     ),
-                    const SizedBox(height: 20,),
-                    Pinput(
-                      length: 6,
-                      showCursor: false,
-                      defaultPinTheme: defaultPinTheme,
-                      focusedPinTheme: defaultPinTheme.copyDecorationWith(
-                        border: Border.all(color: ColorPalette.darkBlue2.withOpacity(0.5)),
+                    submittedPinTheme:defaultPinTheme.copyWith(
+                        decoration: defaultPinTheme.decoration?.copyWith(
+                        color: ColorPalette.blue2
                       ),
-                      submittedPinTheme:defaultPinTheme.copyWith(
-                          decoration: defaultPinTheme.decoration?.copyWith(
-                          color: ColorPalette.darkBlue1
+                    ),
+                    onCompleted: (enteredCode) => _code = enteredCode,
+                  ),
+                  const SizedBox(height: 20,),
+                  Container(
+                    padding: EdgeInsets.symmetric(vertical: 10,horizontal: MediaQuery.of(context).size.width/10),
+                    child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          fixedSize: Size(MediaQuery.of(context).size.width,60),
+                          backgroundColor: ColorPalette.blue1,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          elevation: 10,
+                          // shadowColor: ColorPalette.darkBlue
                         ),
-                      ),
-                      onCompleted: (enteredCode) => _code = enteredCode,
+                      onPressed: () {
+                        if(_code.length==6){
+                          context.read<LocationBloc>().add(LocationTrack(code: _code));
+                        }
+                        else{
+                          showSnackbar(context, 'Please enter the valid code');
+                        }
+                        _code='0';
+                      },
+                      child: Text('Track',
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize:25,
+                            color: Colors.black
+                        ),
+                      )
                     ),
-                    const SizedBox(height: 20,),
-                    Container(
-                      padding: EdgeInsets.symmetric(vertical: 10,horizontal: MediaQuery.of(context).size.width/10),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            fixedSize: Size(MediaQuery.of(context).size.width,60),
-                            backgroundColor: ColorPalette.darkBlue2,
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                            elevation: 10,
-                            shadowColor: ColorPalette.darkBlue
-                          ),
-                        onPressed: () {
-                          if(_code.length==6){
-                            context.read<LocationBloc>().add(LocationTrack(code: _code));
-                          }
-                          else{
-                            showSnackbar(context, 'Please enter the valid code');
-                          }
-                          _code='0';
-                        },
-                        child: const Text('Track',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize:25,
-                              color:Colors.white
-                          ),
-                        )
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

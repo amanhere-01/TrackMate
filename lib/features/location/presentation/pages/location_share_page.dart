@@ -9,6 +9,7 @@ import 'package:track_mate/core/utils/show_snackbar.dart';
 import 'package:track_mate/features/location/bloc/location_bloc.dart';
 import 'package:track_mate/features/location/presentation/pages/home_page.dart';
 import 'package:track_mate/features/location/presentation/widgets/alert_dialog_box.dart';
+import 'package:track_mate/features/location/presentation/widgets/custom_app_bar.dart';
 import '../../../../core/models/user_model.dart';
 import '../../../../core/widgets/loader.dart';
 import '../widgets/map_widget.dart';
@@ -56,7 +57,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
         },
         builder: (context, state) {
           if (state is LocationLoading) {
-            return const Loader(color: Colors.white);
+            return const Loader(color: Colors.black);
           }
           if (state is LocationLoaded) {
             Position currentPosition = state.position;
@@ -72,10 +73,8 @@ class _LocationSharePageState extends State<LocationSharePage> {
 
   Widget _locationLoadedUI(double longitude, double latitude){
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sharing location'),
-        backgroundColor: ColorPalette.lightGreen1 ,
-      ),
+      backgroundColor: ColorPalette.green1,
+      appBar: customAppBar(topColor: ColorPalette.green1, bottomColor: ColorPalette.lightGreen1, text: 'S H A R E    L O C A T I O N'),
       body: Column(
         children: [
           Expanded(
@@ -124,7 +123,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 50,vertical: 5),
             child: SlideAction(
-              height: 65,
+              height: 70,
               sliderRotate: false,
               innerColor: ColorPalette.primary,
               outerColor: ColorPalette.lightGreen1,
@@ -149,6 +148,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
 
   Widget _locationSharingUI(double longitude, double latitude) {
     return Scaffold(
+      backgroundColor: ColorPalette.red,
       body: SafeArea(
         child: Column(
           children: [
@@ -198,7 +198,7 @@ class _LocationSharePageState extends State<LocationSharePage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 50,vertical: 5),
               child: SlideAction(
-                height: 65,
+                height: 70,
                 innerColor: ColorPalette.red2,
                 outerColor: ColorPalette.red1,
                 elevation: 10,
