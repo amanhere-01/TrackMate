@@ -14,15 +14,16 @@ class AlertDialogBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Stop $actionText?',
+      title: Text('Stop $actionText',
         style: const TextStyle(
-            fontWeight: FontWeight.w600
+          fontSize: 25,
+          fontWeight: FontWeight.w600
         ),
       ),
       content: const Text("Are you sure ?",
         style: TextStyle(
           color: ColorPalette.text,
-          fontSize: 16
+          fontSize: 18
         ),
       ),
       actions: [
@@ -37,6 +38,7 @@ class AlertDialogBox extends StatelessWidget {
             },
           child: const Text('Yes',
             style: TextStyle(
+              fontSize: 20,
               fontWeight: FontWeight.bold,
               color: Colors.red
             ),
@@ -48,8 +50,9 @@ class AlertDialogBox extends StatelessWidget {
           },
           child: const Text('No',
             style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.blue
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              color: Colors.blue
             ),
           )
         )
