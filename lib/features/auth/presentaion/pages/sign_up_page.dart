@@ -146,7 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ) ,
               ),
               if(state is AuthLoading)
-                const Loader(color: Colors.white,)
+                const Loader(color: Colors.black,)
             ]
           );
         },

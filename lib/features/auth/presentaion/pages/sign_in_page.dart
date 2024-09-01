@@ -140,7 +140,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
             ),
             if(state is AuthLoading)
-              const Loader(color: Colors.white,)
+              const Loader(color: Colors.black,)
           ]
         );
       },
